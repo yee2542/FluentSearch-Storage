@@ -16,10 +16,10 @@ describe('FilesController', () => {
     expect(controller).toBeDefined();
   });
 
-  it('should return undefined after upload', async () => {
-    const result = await controller.uploadFile()
-    expect(result).toBeUndefined()
-  })
+  // it('should return undefined after upload', async () => {
+  //   const result = await controller.uploadFile()
+  //   expect(result).toBeUndefined()
+  // })
 
   it('should return id', async () => {
     const mockId = '1'
