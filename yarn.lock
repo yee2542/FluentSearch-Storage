@@ -573,7 +573,7 @@
     tslib "2.0.1"
     uuid "8.3.0"
 
-"@nestjs/platform-express@^7.0.0":
+"@nestjs/platform-express@^7.4.4":
   version "7.4.4"
   resolved "https://registry.yarnpkg.com/@nestjs/platform-express/-/platform-express-7.4.4.tgz#03429ebd5ae4fe7e38556cd9af8ae38ee42e7d1f"
   integrity sha512-LO0WuMZuP1P68t2kQbxb3GUh2SfkOGw5Ma2fR+QWNS7N63BL6Vsf/b8Ad43ht51FuVfqOQZo7AJVz8DljDRw3A==
