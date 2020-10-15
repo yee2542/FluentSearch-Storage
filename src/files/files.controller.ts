@@ -1,7 +1,5 @@
-import { Controller, Get, HttpCode, Param, Post, Req, UploadedFiles, UseInterceptors, UsePipes } from '@nestjs/common';
+import { Controller, Get, HttpCode, Param, Post, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { Request, Response } from 'express';
-import { FileStreamUploadInterceptor } from './file.stream.upload.interceptor';
 @Controller('files')
 export class FilesController {
     @Post('/upload')
@@ -11,7 +9,6 @@ export class FilesController {
             { name: 'files', maxCount: 5 }
         ]
     ))
-    @UseInterceptors(new FileStreamUploadInterceptor())
     async uploadFile(@UploadedFiles() files): Promise<void> {
         console.log(files)
         return
