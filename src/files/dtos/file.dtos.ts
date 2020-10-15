@@ -1,5 +1,5 @@
 export class FileDto {
-    fieldname: string
-    filename: string
-    contentType: string
+  fieldname: string;
+  filename: string;
+  contentType: string;
 }

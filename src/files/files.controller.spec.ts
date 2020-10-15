@@ -22,8 +22,8 @@ describe('FilesController', () => {
   // })
 
   it('should return id', async () => {
-    const mockId = '1'
-    const result = await controller.getFileById(mockId)
-    expect(result).toBe(mockId)
-  })
+    const mockId = '1';
+    const result = await controller.getFileById(mockId);
+    expect(result).toBe(mockId);
+  });
 });
