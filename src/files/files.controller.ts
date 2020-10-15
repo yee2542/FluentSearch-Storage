@@ -15,7 +15,7 @@ export class FilesController {
   @UseInterceptors(FileFieldsInterceptor([{ name: 'files', maxCount: 5 }]))
   async uploadFile(@UploadedFiles() files): Promise<void> {
     console.log(files);
-    return;
+    return files;
   }
 
   @Get('/:id')
