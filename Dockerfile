@@ -5,6 +5,7 @@ COPY package.json package.json
 RUN yarn install
 ADD . .
 CMD ["yarn", "start:dev"]
+EXPOSE 3000
 
 FROM node:15.14.0-stretch AS prod
 COPY yarn.lock yarn.lock
@@ -13,3 +14,4 @@ RUN yarn install
 ADD . .
 RUN yarn build
 CMD [ "yarn", "start:prod" ]
+EXPOSE 3000
