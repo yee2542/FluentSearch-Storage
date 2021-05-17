@@ -25,14 +25,12 @@ export class StreamController {
     },
   })
   @ApiConsumes('multipart/form-data')
-  @Post('/upload')
+  @Post('/')
   @UseInterceptors(FilesInterceptor('files'))
   uploadFile(
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Req() req: Request,
   ) {
-    // console.log(files[0].size);
-    // console.log(files);
     console.log(req.files);
   }
 }
