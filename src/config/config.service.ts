@@ -16,6 +16,7 @@ export class ConfigService {
       PORT,
       SESSION_EXPIRES,
       SESSION_SECRET,
+      STORAGE_HOSTNAME,
     } = process.env as ConfigEnvType;
     return {
       database: {
@@ -37,6 +38,7 @@ export class ConfigService {
         secret: SESSION_SECRET || 'FluentSearch.SESSION.SECRET',
         expires: Number(SESSION_EXPIRES) || 86400000, // one day
       },
+      storage_hostname: STORAGE_HOSTNAME,
     };
   }
 }

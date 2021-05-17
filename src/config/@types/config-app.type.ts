@@ -16,4 +16,5 @@ export type ConfigAppProviderType = {
     secret: string;
     expires: number;
   };
+  storage_hostname: string;
 };

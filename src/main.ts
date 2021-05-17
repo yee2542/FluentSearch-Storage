@@ -24,6 +24,10 @@ async function bootstrap() {
   const options = new DocumentBuilder()
     .setTitle('FluentSearch Storage')
     .setVersion('1.0')
+    .addBearerAuth(
+      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
+      'JWT',
+    )
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/docs', app, document);
