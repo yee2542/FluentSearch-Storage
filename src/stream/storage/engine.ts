@@ -1,8 +1,7 @@
-import { StorageEngine } from 'multer';
 import { Request } from 'express';
-import fs from 'fs';
+import { StorageEngine } from 'multer';
 
-class Engine implements StorageEngine {
+export class Engine implements StorageEngine {
   _handleFile(
     req: Request,
     file: Express.Multer.File,
