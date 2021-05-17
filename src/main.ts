@@ -22,7 +22,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   const options = new DocumentBuilder()
-    .setTitle('Fluent Search Storage')
+    .setTitle('FluentSearch Storage')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, options);
