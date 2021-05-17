@@ -15,7 +15,7 @@ import {
 } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 
-@Controller('stream')
+@Controller()
 export class StreamController {
   @ApiOperation({
     summary: 'Upload a file.',
