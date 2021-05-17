@@ -21,7 +21,7 @@ import {
   ZoneEnum,
 } from 'fluentsearch-types';
 import { ConfigService } from '../config/config.service';
-import { StorageResponseDTO } from './dtos/stream.response.dto';
+import { StorageResponseDTO } from './dtos/storage.response.dto';
 
 @Controller()
 export class StorageController {
