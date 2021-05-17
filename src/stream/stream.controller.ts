@@ -1,5 +1,6 @@
 import {
   Controller,
+  Logger,
   Post,
   Req,
   Res,
@@ -13,7 +14,13 @@ import {
   ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger';
-import { Request, Response } from 'express';
+import e, { Request, Response } from 'express';
+import {
+  FileListResponseDTO,
+  FileTypeEnum,
+  ZoneEnum,
+} from 'fluentsearch-types';
+import { StreamResponseDTO } from './dtos/stream.response.dto';
 
 @Controller()
 export class StreamController {
@@ -39,8 +46,31 @@ export class StreamController {
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Req() req: Request,
     @Res() res: Response,
-  ) {
-    const resParsed = files.map(f => ({ ...f, buffer: undefined }));
-    res.send(resParsed);
+  ): Promise<Response<FileListResponseDTO[]>> {
+    const logs = files.map(el => ({ ...el, buffer: undefined }));
+    Logger.verbose(logs, 'Stream [POST]');
+
+    const resParsed: FileListResponseDTO[] = files.map(el => ({
+      _id: Math.random()
+        .toString()
+        .replace('.', ''),
+      owner: Math.random()
+        .toString()
+        .replace('.', ''),
+      zone: ZoneEnum.TH,
+      label: el.filename,
+      type: el.mimetype.includes('image')
+        ? FileTypeEnum.Image
+        : FileTypeEnum.Video,
+      refs: 'string',
+
+      uri: 'storage.fluentsearch.ml',
+      thumbnail_uri: 'storage.fluentsearch.ml',
+
+      createAt: new Date(),
+      updateAt: new Date(),
+    }));
+
+    return res.send(resParsed);
   }
 }
