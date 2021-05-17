@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { StreamController } from './stream.controller';
+import { StorageController } from './storage.controller';
 
-describe('StreamController', () => {
-  let controller: StreamController;
+describe('StorageController', () => {
+  let controller: StorageController;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [StreamController],
+      controllers: [StorageController],
     }).compile();
 
-    controller = module.get<StreamController>(StreamController);
+    controller = module.get<StorageController>(StorageController);
   });
 
   it('should be defined', () => {

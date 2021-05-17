@@ -14,7 +14,7 @@ import {
   ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger';
-import e, { Request, Response } from 'express';
+import { Request, Response } from 'express';
 import {
   FileListResponseDTO,
   FileTypeEnum,
@@ -23,7 +23,7 @@ import {
 import { StreamResponseDTO } from './dtos/stream.response.dto';
 
 @Controller()
-export class StreamController {
+export class StorageController {
   @ApiOperation({
     summary: 'Upload a file.',
     requestBody: {

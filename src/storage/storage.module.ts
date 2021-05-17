@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common';
 import { MulterModule } from '@nestjs/platform-express';
 import { ConfigModule } from '../config/config.module';
 import { MulterConfigService } from './multer.config-service';
-import { StreamService } from './stream.service';
-import { StreamController } from './stream.controller';
+import { StorageService } from './storage.service';
+import { StorageController } from './storage.controller';
 
 @Module({
   imports: [
@@ -12,7 +12,7 @@ import { StreamController } from './stream.controller';
       useClass: MulterConfigService,
     }),
   ],
-  providers: [StreamService],
-  controllers: [StreamController],
+  providers: [StorageService],
+  controllers: [StorageController],
 })
-export class StreamModule {}
+export class StorageModule {}
