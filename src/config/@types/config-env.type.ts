@@ -9,6 +9,7 @@ export enum ConfigEnvEnum {
   SESSION_EXPIRES = 'SESSION_EXPIRES',
   ORIGIN = 'ORIGIN',
   PORT = 'PORT',
+  STORAGE_HOSTNAME = 'STORAGE_HOSTNAME',
 }
 
 export type ConfigEnvType = {
