@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import {
-  MulterOptionsFactory,
   MulterModuleOptions,
+  MulterOptionsFactory,
 } from '@nestjs/platform-express';
-import { join } from 'path';
 import Multer from 'multer';
 
 @Injectable()
