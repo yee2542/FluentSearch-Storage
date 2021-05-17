@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigModule } from '../config/config.module';
 import { StorageController } from './storage.controller';
 
 describe('StorageController', () => {
@@ -6,6 +7,7 @@ describe('StorageController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports: [ConfigModule],
       controllers: [StorageController],
     }).compile();
 
