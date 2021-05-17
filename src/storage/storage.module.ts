@@ -7,6 +7,7 @@ import { StorageController } from './storage.controller';
 
 @Module({
   imports: [
+    ConfigModule,
     MulterModule.registerAsync({
       imports: [ConfigModule],
       useClass: MulterConfigService,

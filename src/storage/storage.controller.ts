@@ -20,10 +20,13 @@ import {
   FileTypeEnum,
   ZoneEnum,
 } from 'fluentsearch-types';
+import { ConfigService } from '../config/config.service';
 import { StreamResponseDTO } from './dtos/stream.response.dto';
 
 @Controller()
 export class StorageController {
+  constructor(private readonly configService: ConfigService) {}
+
   @ApiOperation({
     summary: 'Upload a file.',
     requestBody: {
@@ -50,6 +53,9 @@ export class StorageController {
     const logs = files.map(el => ({ ...el, buffer: undefined }));
     Logger.verbose(logs, 'Stream [POST]');
 
+    const endpoint =
+      this.configService.get().storage_hostname || 'storage.fluentsearch.ml';
+
     const resParsed: FileListResponseDTO[] = files.map(el => ({
       _id: Math.random()
         .toString()
@@ -64,8 +70,8 @@ export class StorageController {
         : FileTypeEnum.Video,
       refs: 'string',
 
-      uri: 'storage.fluentsearch.ml',
-      thumbnail_uri: 'storage.fluentsearch.ml',
+      uri: endpoint,
+      thumbnail_uri: endpoint + '/thumbnail',
 
       createAt: new Date(),
       updateAt: new Date(),
