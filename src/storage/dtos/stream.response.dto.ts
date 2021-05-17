@@ -5,7 +5,7 @@ import {
   ZoneEnum,
 } from 'fluentsearch-types';
 
-export class StreamResponseDTO implements FileListResponseDTO {
+export class StorageResponseDTO implements FileListResponseDTO {
   @ApiProperty()
   _id: string;
 
@@ -22,7 +22,7 @@ export class StreamResponseDTO implements FileListResponseDTO {
   type: FileTypeEnum;
 
   @ApiProperty({ nullable: true })
-  refs?: string | undefined;
+  refs?: string;
 
   @ApiProperty()
   uri: string;

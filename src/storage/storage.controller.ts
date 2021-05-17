@@ -21,7 +21,7 @@ import {
   ZoneEnum,
 } from 'fluentsearch-types';
 import { ConfigService } from '../config/config.service';
-import { StreamResponseDTO } from './dtos/stream.response.dto';
+import { StorageResponseDTO } from './dtos/stream.response.dto';
 
 @Controller()
 export class StorageController {
@@ -40,7 +40,7 @@ export class StorageController {
       },
     },
   })
-  @ApiOkResponse({ type: StreamResponseDTO })
+  @ApiOkResponse({ type: StorageResponseDTO })
   @ApiBearerAuth('JWT')
   @ApiConsumes('multipart/form-data')
   @Post('/')
