@@ -1,5 +1,6 @@
 import {
   Controller,
+  Get,
   Logger,
   Post,
   Req,
@@ -20,6 +21,7 @@ import {
   FileTypeEnum,
   ZoneEnum,
 } from 'fluentsearch-types';
+import { join, resolve } from 'path';
 import { ConfigService } from '../config/config.service';
 import { StorageResponseDTO } from './dtos/storage.response.dto';
 
@@ -56,15 +58,16 @@ export class StorageController {
 
     const endpoint =
       this.configService.get().storage_hostname || 'storage.fluentsearch.ml';
-
+    const userId = Math.random()
+      .toString()
+      .replace('.', '');
+    const fileId = Math.random()
+      .toString()
+      .replace('.', '');
     const resParsed: FileListResponseDTO[] = files.map(el => ({
-      _id: Math.random()
-        .toString()
-        .replace('.', ''),
+      _id: fileId,
       original_filename: el.originalname,
-      owner: Math.random()
-        .toString()
-        .replace('.', ''),
+      owner: userId,
       zone: ZoneEnum.TH,
       label: el.filename,
       type: el.mimetype.includes('image')
@@ -72,8 +75,8 @@ export class StorageController {
         : FileTypeEnum.Video,
       refs: 'string',
 
-      uri: endpoint,
-      thumbnail_uri: endpoint + '/thumbnail',
+      uri: join(endpoint, userId, fileId),
+      thumbnail_uri: join(endpoint, userId, fileId, 'thumbnail'),
 
       createAt: new Date(),
       updateAt: new Date(),
