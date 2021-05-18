@@ -61,7 +61,7 @@ export class StorageController {
       _id: Math.random()
         .toString()
         .replace('.', ''),
-      original_filename: el.filename,
+      original_filename: el.originalname,
       owner: Math.random()
         .toString()
         .replace('.', ''),
