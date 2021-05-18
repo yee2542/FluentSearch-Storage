@@ -22,7 +22,6 @@ export class JwtAuthGuard implements CanActivate {
     if (!token) return false;
 
     const extractToken = token.replace('Bearer ', '');
-    console.log(extractToken);
     try {
       const { _id } = this.jwtService.verify(extractToken, {
         secret: this.configService.get().jwt.secretKey,
