@@ -6,6 +6,7 @@ import {
   Req,
   Res,
   UploadedFiles,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
@@ -19,16 +20,19 @@ import { Request, Response } from 'express';
 import {
   FileListResponseDTO,
   FileTypeEnum,
+  UserSessionDto,
   ZoneEnum,
 } from 'fluentsearch-types';
 import { join, resolve } from 'path';
 import { ConfigService } from '../config/config.service';
+import { UserTokenInfo } from './decorators/user-token-info.decorator';
 import { StorageResponseDTO } from './dtos/storage.response.dto';
-
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 @Controller()
 export class StorageController {
   constructor(private readonly configService: ConfigService) {}
 
+  @UseGuards(JwtAuthGuard)
   @ApiOperation({
     summary: 'Upload a file.',
     requestBody: {
@@ -51,10 +55,10 @@ export class StorageController {
     @UploadedFiles() files: Array<Express.Multer.File>,
     @Req() req: Request,
     @Res() res: Response,
+    @UserTokenInfo() user: UserSessionDto,
   ): Promise<Response<FileListResponseDTO[]>> {
     const logs = files.map(el => ({ ...el, buffer: undefined }));
     Logger.verbose(logs, 'Stream [POST]');
-    console.log(req.cookies?.Authorization);
 
     const endpoint =
       this.configService.get().storage_hostname || 'storage.fluentsearch.ml';
@@ -67,13 +71,13 @@ export class StorageController {
     const resParsed: FileListResponseDTO[] = files.map(el => ({
       _id: fileId,
       original_filename: el.originalname,
-      owner: userId,
+      owner: user._id,
       zone: ZoneEnum.TH,
       label: el.filename,
       type: el.mimetype.includes('image')
         ? FileTypeEnum.Image
         : FileTypeEnum.Video,
-      refs: 'string',
+      refs: undefined,
 
       uri: join(endpoint, userId, fileId),
       thumbnail_uri: join(endpoint, userId, fileId, 'thumbnail'),
