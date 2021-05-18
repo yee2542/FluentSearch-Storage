@@ -52,10 +52,7 @@ export class StorageController {
   ): Promise<Response<FileListResponseDTO[]>> {
     const logs = files.map(el => ({ ...el, buffer: undefined }));
     Logger.verbose(logs, 'Stream [POST]');
-    // console.log(req.headers.Authorization);
-    // console.log(req.cookies.Authorization);
     console.log(req.cookies?.Authorization);
-    // console.log(req.headers);
 
     const endpoint =
       this.configService.get().storage_hostname || 'storage.fluentsearch.ml';
@@ -64,6 +61,7 @@ export class StorageController {
       _id: Math.random()
         .toString()
         .replace('.', ''),
+      original_filename: el.filename,
       owner: Math.random()
         .toString()
         .replace('.', ''),
