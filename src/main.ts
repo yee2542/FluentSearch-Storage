@@ -1,6 +1,7 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { ConfigAppProviderType } from './config/@types/config-app.type';
 import { ConfigModule } from './config/config.module';
@@ -20,14 +21,19 @@ async function bootstrap() {
     credentials: true,
   });
   app.useGlobalPipes(new ValidationPipe());
+  app.use(cookieParser());
 
   const options = new DocumentBuilder()
+
     .setTitle('FluentSearch Storage')
     .setVersion('1.0')
-    .addBearerAuth(
-      { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' },
-      'JWT',
-    )
+    .addCookieAuth('Authorization', {
+      type: 'apiKey',
+      in: 'cookie',
+      bearerFormat: 'JWT',
+      name: 'Authorization',
+    })
+
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('/docs', app, document);

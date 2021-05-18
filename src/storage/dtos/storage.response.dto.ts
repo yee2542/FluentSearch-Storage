@@ -10,6 +10,9 @@ export class StorageResponseDTO implements FileListResponseDTO {
   _id: string;
 
   @ApiProperty()
+  original_filename: string;
+
+  @ApiProperty()
   owner: string;
 
   @ApiProperty({ enum: ZoneEnum })
