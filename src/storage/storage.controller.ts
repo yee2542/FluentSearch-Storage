@@ -9,8 +9,8 @@ import {
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import {
-  ApiBearerAuth,
   ApiConsumes,
+  ApiCookieAuth,
   ApiOkResponse,
   ApiOperation,
 } from '@nestjs/swagger';
@@ -41,7 +41,7 @@ export class StorageController {
     },
   })
   @ApiOkResponse({ type: StorageResponseDTO })
-  @ApiBearerAuth('JWT')
+  @ApiCookieAuth('Authorization')
   @ApiConsumes('multipart/form-data')
   @Post('/')
   @UseInterceptors(FilesInterceptor('files'))
@@ -52,6 +52,10 @@ export class StorageController {
   ): Promise<Response<FileListResponseDTO[]>> {
     const logs = files.map(el => ({ ...el, buffer: undefined }));
     Logger.verbose(logs, 'Stream [POST]');
+    // console.log(req.headers.Authorization);
+    // console.log(req.cookies.Authorization);
+    console.log(req.cookies?.Authorization);
+    // console.log(req.headers);
 
     const endpoint =
       this.configService.get().storage_hostname || 'storage.fluentsearch.ml';
