@@ -81,4 +81,9 @@ export class StorageController {
 
     return res.send(resParsed);
   }
+
+  @Get('/:user/:fild_id')
+  async sendUserFile(@Res() res: Response) {
+    res.sendFile(resolve('src/storage/sample.jpeg'));
+  }
 }
