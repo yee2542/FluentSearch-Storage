@@ -12,9 +12,5 @@ export type ConfigAppProviderType = {
   node_env: 'production' | 'development';
   origin: RegExp;
   port: number;
-  session: {
-    secret: string;
-    expires: number;
-  };
   storage_hostname: string;
 };
