@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 
 export const UserTokenInfo = createParamDecorator(
   (_data: unknown, ctx: ExecutionContext): UserSessionDto => {
-    const req = ctx.switchToHttp().getRequest() as Request;
+    const req = ctx.switchToHttp().getRequest<Request>();
     const token = req.cookies.Authorization;
     const extractToken = token.replace('Bearer ', '');
     return jwt.decode(extractToken) as UserSessionDto;
