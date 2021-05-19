@@ -7,10 +7,18 @@ import { StorageController } from './storage.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '../config/config.service';
 import { MinioModule } from 'nestjs-minio-client';
+import { MongooseModule } from '@nestjs/mongoose';
+import fileSchema, { FILES_SCHEMA_NAME } from './schemas/file.schema';
 
 @Module({
   imports: [
     ConfigModule,
+    MongooseModule.forFeature([
+      {
+        name: FILES_SCHEMA_NAME,
+        schema: fileSchema,
+      },
+    ]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

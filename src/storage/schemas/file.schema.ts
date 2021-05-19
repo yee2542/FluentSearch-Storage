@@ -17,5 +17,7 @@ export interface FileDocument
   extends Document,
     BaseFileSchema<
       FileTypeEnum.Image | FileTypeEnum.ImageThumbnail | FileTypeEnum.Video,
-      any
+      Record<'record', any>
     > {}
+
+export const FILES_SCHEMA_NAME = 'files';
