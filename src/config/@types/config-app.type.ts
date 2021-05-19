@@ -13,4 +13,11 @@ export type ConfigAppProviderType = {
   origin: RegExp;
   port: number;
   storage_hostname: string;
+  minio: {
+    endpoint: string;
+    access_key: string;
+    secret_key: string;
+    port: number;
+    ssl: boolean;
+  };
 };

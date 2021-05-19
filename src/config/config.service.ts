@@ -15,6 +15,11 @@ export class ConfigService {
       ORIGIN,
       PORT,
       STORAGE_HOSTNAME,
+      MINIO_SERVER_ENDPOINT,
+      MINIO_ACCESS_KEY,
+      MINIO_SECRET_KEY,
+      MINIO_SERVER_PORT,
+      MINIO_SERVER_SSL,
     } = process.env as ConfigEnvType;
     return {
       database: {
@@ -32,8 +37,14 @@ export class ConfigService {
         'development',
       origin: new RegExp(ORIGIN),
       port: Number(PORT || 5000),
-
       storage_hostname: STORAGE_HOSTNAME,
+      minio: {
+        endpoint: MINIO_SERVER_ENDPOINT,
+        access_key: MINIO_ACCESS_KEY,
+        secret_key: MINIO_SECRET_KEY,
+        port: Number(MINIO_SERVER_PORT),
+        ssl: MINIO_SERVER_SSL === 'true',
+      },
     };
   }
 }
