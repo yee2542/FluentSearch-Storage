@@ -20,4 +20,9 @@ export interface FileDocument
       Record<'record', any>
     > {}
 
+export type File = BaseFileSchema<
+  FileTypeEnum.Image | FileTypeEnum.ImageThumbnail | FileTypeEnum.Video,
+  Record<'record', any>
+>;
+
 export const FILES_SCHEMA_NAME = 'files';
