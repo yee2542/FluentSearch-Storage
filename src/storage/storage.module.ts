@@ -10,6 +10,17 @@ import { MinioModule } from 'nestjs-minio-client';
 import { MongooseModule } from '@nestjs/mongoose';
 import fileSchema, { FILES_SCHEMA_NAME } from './schemas/file.schema';
 
+const MinioInstance = MinioModule.registerAsync({
+  imports: [ConfigModule],
+  inject: [ConfigService],
+  useFactory: (config: ConfigService) => ({
+    endPoint: config.get().minio.endpoint,
+    accessKey: config.get().minio.access_key,
+    secretKey: config.get().minio.secret_key,
+    port: config.get().minio.port,
+    useSSL: config.get().minio.ssl,
+  }),
+});
 @Module({
   imports: [
     ConfigModule,
@@ -31,20 +42,10 @@ import fileSchema, { FILES_SCHEMA_NAME } from './schemas/file.schema';
       }),
     }),
     MulterModule.registerAsync({
-      imports: [ConfigModule],
+      imports: [ConfigModule, MinioInstance],
       useClass: MulterConfigService,
     }),
-    MinioModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        endPoint: config.get().minio.endpoint,
-        accessKey: config.get().minio.access_key,
-        secretKey: config.get().minio.secret_key,
-        port: config.get().minio.port,
-        useSSL: config.get().minio.ssl,
-      }),
-    }),
+    MinioInstance,
   ],
   providers: [StorageService],
   controllers: [StorageController],
