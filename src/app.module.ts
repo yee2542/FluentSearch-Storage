@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { ConfigDatabaseService } from './config/config.database.service';
 import { ConfigModule } from './config/config.module';
 import { StorageModule } from './storage/storage.module';
+import { ThumbnailModule } from './thumbnail/thumbnail.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { StorageModule } from './storage/storage.module';
       imports: [ConfigModule],
       useClass: ConfigDatabaseService,
     }),
+    ThumbnailModule,
   ],
   controllers: [AppController],
   providers: [AppService],
