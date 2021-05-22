@@ -33,8 +33,7 @@ services:
       - '3000:3000'
       - '9229:9229'
     volumes:
-      - './src:/src'
-      - './schema.gql:/schema.gql'
+      - './src:/home/src'
     logging:
       options:
         max-size: 50m
