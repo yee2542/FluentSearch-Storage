@@ -781,13 +781,6 @@
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.46.tgz#0fb6bfbbeabd7a30880504993369c4bf1deab1fe"
   integrity sha512-laIjwTQaD+5DukBZaygQ79K1Z0jb1bPEMRrkXSLjtCcZm+abyp5YbrqpSLzD42FwWW6gK/aS4NYpJ804nG2brg==
 
-"@types/exif@^0.6.2":
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/@types/exif/-/exif-0.6.2.tgz#2e3a374e56f1daa43e72da472f95f6b8a9b3a83c"
-  integrity sha512-v3nAC7E8AzjHuLhfenS75p9Yv10gALXG8TMMMNXlzFI/B2lqX+sYnMYFuyCaGYQK1T2TtTfZHUBryo42v5DAjw==
-  dependencies:
-    "@types/node" "*"
-
 "@types/express-serve-static-core@^4.17.18":
   version "4.17.19"
   resolved "https://registry.yarnpkg.com/@types/express-serve-static-core/-/express-serve-static-core-4.17.19.tgz#00acfc1632e729acac4f1530e9e16f6dd1508a1d"
@@ -2116,7 +2109,7 @@ data-urls@^2.0.0:
     whatwg-mimetype "^2.3.0"
     whatwg-url "^8.0.0"
 
-debug@2.6.9, debug@^2.2, debug@^2.2.0, debug@^2.3.3, debug@^2.6.9:
+debug@2.6.9, debug@^2.2.0, debug@^2.3.3, debug@^2.6.9:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
   integrity sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==
@@ -2656,18 +2649,6 @@ execa@^4.0.0, execa@^4.0.2:
     signal-exit "^3.0.2"
     strip-final-newline "^2.0.0"
 
-exif@^0.6.0:
-  version "0.6.0"
-  resolved "https://registry.yarnpkg.com/exif/-/exif-0.6.0.tgz#60a62668076542cb7e4f57199d4ac6f37d2c5f4a"
-  integrity sha1-YKYmaAdlQst+T1cZnUrG830sX0o=
-  dependencies:
-    debug "^2.2"
-
-exifr@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/exifr/-/exifr-7.0.0.tgz#065d54639f2999ac901dd8475db99b4d3f31f11e"
-  integrity sha512-5JRtopcolAfsX4YGcvTkldXyFDC+VPV40DxhSdRvrDr4OJQHtyccNoYl4aRzYBnVVpNueMmenS0KhzLiyNSfEQ==
-
 exit@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/exit/-/exit-0.1.2.tgz#0632638f8d877cc82107d30a0fff1a17cba1cd0c"
@@ -2897,10 +2878,10 @@ flatted@^2.0.0:
   resolved "https://registry.yarnpkg.com/flatted/-/flatted-2.0.2.tgz#4575b21e2bcee7434aa9be662f4b7b5f9c2b5138"
   integrity sha512-r5wGx7YeOwNWNlCA0wQ86zKyDLMQr+/RB8xy74M4hTphfmjlijTSSXGuH8rnvKZnfT9i+75zmd8jcKdMR4O6jA==
 
-fluentsearch-types@^0.6.3:
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/fluentsearch-types/-/fluentsearch-types-0.6.3.tgz#b54d2f1dbfe4045c83eaa84e5b2b6e59a093c9ea"
-  integrity sha512-9ZwfluHkNKIOi9v5lf7YEo8g2V35+pWqB1RGxp1VEOdYppgFFtNFuvVVel29ZbMaCXvO3EJUHryLf9fWbgIfcA==
+fluentsearch-types@^0.6.4:
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/fluentsearch-types/-/fluentsearch-types-0.6.4.tgz#1e012eae8d50d31d078be7cef5198fd47f04fff1"
+  integrity sha512-Xa/k4IsyV+2MCx2Zm7j6WzpH0muDxb/laqOjKZ6MNYF9UZTF6k/tPDpOpG/GaTntjTR5Rf3hYa6mCwio6BiYhg==
 
 follow-redirects@^1.10.0:
   version "1.14.1"
