@@ -42,7 +42,7 @@ const MinioInstance = MinioModule.registerAsync({
       }),
     }),
     MulterModule.registerAsync({
-      imports: [ConfigModule, MinioInstance],
+      imports: [ConfigModule],
       useClass: MulterConfigService,
     }),
     MinioInstance,
