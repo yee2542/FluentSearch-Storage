@@ -1,11 +1,20 @@
 import { BaseFileSchema, FileTypeEnum } from 'fluentsearch-types';
 import { Schema } from 'mongoose';
 
+const metaSchema = new Schema({
+  width: { type: Number },
+  height: { type: Number },
+  size: { type: Number },
+  contentType: { type: String },
+  extension: { type: String },
+});
+
 const fileSchema = new Schema<FileDocument>({
-  meta: { type: Object },
+  meta: { type: Object || metaSchema },
   owner: { type: String, index: true },
   zone: { type: String, index: true },
-  label: { type: String },
+  original_filename: { type: String },
+  type: { type: FileTypeEnum, index: true, enum: FileTypeEnum },
 
   createDate: { type: Date, default: Date.now, index: true },
   updateDate: { type: Date, default: Date.now, index: true },
