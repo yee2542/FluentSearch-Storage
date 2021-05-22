@@ -18,9 +18,6 @@ export class StorageResponseDTO implements FileListResponseDTO {
   @ApiProperty({ enum: ZoneEnum })
   zone: ZoneEnum;
 
-  @ApiProperty()
-  label: string;
-
   @ApiProperty({ enum: FileTypeEnum })
   type: FileTypeEnum;
 
