@@ -31,6 +31,7 @@ import { ConfigService } from '../config/config.service';
 import { UserTokenInfo } from './decorators/user-token-info.decorator';
 import { StorageResponseDTO } from './dtos/storage.response.dto';
 import { InvalidFileIdException } from './exceptions/invalid-file-id.exception';
+import { InvalidUserAccessException } from './exceptions/invalid-user-access.exception';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { StorageService } from './storage.service';
 import mimeFileUtils from './utils/mime-file.utils';
@@ -138,12 +139,16 @@ export class StorageController {
     return res.send(resParsed);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('/:user/:fild_id')
   async sendUserFile(
     @Res() res: Response,
-    @Param('user') user: string,
+    @Param('user') userParam: string,
     @Param('fild_id') fileId: string,
+    @UserTokenInfo() user: UserSessionDto,
   ) {
+    if (userParam != user._id) throw new InvalidUserAccessException();
+
     const file = await this.storageService.getFileById(fileId);
     if (!file) throw new InvalidFileIdException();
     const bucket = file?.owner;
