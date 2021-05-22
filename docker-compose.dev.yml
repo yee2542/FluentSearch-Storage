@@ -35,6 +35,7 @@ services:
     volumes:
       - './src:/src'
       - './schema.gql:/schema.gql'
+      - './upload:/upload'
     logging:
       options:
         max-size: 50m
