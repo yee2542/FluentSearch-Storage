@@ -1,4 +1,4 @@
 import { Controller } from '@nestjs/common';
 
-@Controller('thumbnail')
+@Controller()
 export class ThumbnailController {}
