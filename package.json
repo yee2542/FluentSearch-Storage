@@ -36,6 +36,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
+    "sharp": "^0.28.2",
     "swagger-ui-express": "^4.1.6"
   },
   "devDependencies": {
@@ -48,6 +49,7 @@
     "@types/minio": "^7.0.7",
     "@types/multer": "^1.4.5",
     "@types/node": "^13.9.1",
+    "@types/sharp": "^0.28.1",
     "@types/supertest": "^2.0.8",
     "@types/swagger-ui-express": "^4.1.2",
     "@typescript-eslint/eslint-plugin": "3.9.1",
@@ -55,7 +57,7 @@
     "eslint": "7.7.0",
     "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-import": "^2.20.1",
-    "fluentsearch-types": "^0.6.2",
+    "fluentsearch-types": "^0.6.3",
     "jest": "26.4.2",
     "prettier": "^1.19.1",
     "supertest": "^4.0.2",
