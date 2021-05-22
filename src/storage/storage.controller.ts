@@ -1,7 +1,9 @@
 import {
   Controller,
   Get,
+  InternalServerErrorException,
   Logger,
+  Param,
   Post,
   Req,
   Res,
@@ -24,10 +26,11 @@ import {
 } from 'fluentsearch-types';
 import { Types } from 'mongoose';
 import { MinioService } from 'nestjs-minio-client';
-import { join, resolve } from 'path';
+import { join } from 'path';
 import { ConfigService } from '../config/config.service';
 import { UserTokenInfo } from './decorators/user-token-info.decorator';
 import { StorageResponseDTO } from './dtos/storage.response.dto';
+import { InvalidFileIdException } from './exceptions/invalid-file-id.exception';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { StorageService } from './storage.service';
 import mimeFileUtils from './utils/mime-file.utils';
@@ -136,7 +139,31 @@ export class StorageController {
   }
 
   @Get('/:user/:fild_id')
-  async sendUserFile(@Res() res: Response) {
-    res.sendFile(resolve('src/storage/sample.jpeg'));
+  async sendUserFile(
+    @Res() res: Response,
+    @Param('user') user: string,
+    @Param('fild_id') fileId: string,
+  ) {
+    const file = await this.storageService.getFileById(fileId);
+    if (!file) throw new InvalidFileIdException();
+    const bucket = file?.owner;
+    const object = file._id + '-' + file.original_filename;
+    const contentType = file.meta.contentType;
+    res.setHeader('Content-Type', contentType);
+
+    this.minioClient.client.getObject(bucket, object, (err, stream) => {
+      if (err) {
+        throw new InternalServerErrorException(err);
+      }
+      stream.on('error', streamError => {
+        throw new InternalServerErrorException(streamError);
+      });
+      stream.on('data', chunk => {
+        res.write(chunk);
+      });
+      stream.on('end', () => {
+        res.end();
+      });
+    });
   }
 }
