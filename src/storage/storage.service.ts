@@ -19,6 +19,10 @@ export class StorageService {
     private readonly fileModel: Model<FileDocument>,
   ) {}
 
+  async getFileById(id: string) {
+    return this.fileModel.findById(id);
+  }
+
   async createMeta(data: {
     _id: Types.ObjectId;
     owner: string;
