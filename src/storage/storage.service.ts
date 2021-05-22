@@ -3,6 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import FFmpeg from 'fluent-ffmpeg';
 import {
   BaseFileMetaSchema,
+  FileDocument,
+  FILES_SCHEMA_NAME,
   FileTypeEnum,
   ImageMeta,
   UserZoneEnum,
@@ -12,7 +14,6 @@ import {
 import { Model, Types } from 'mongoose';
 import sharp from 'sharp';
 import { Readable } from 'stream';
-import { FileDocument, FILES_SCHEMA_NAME } from './schemas/file.schema';
 
 @Injectable()
 export class StorageService {
