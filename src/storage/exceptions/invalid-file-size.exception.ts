@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 
-export class InvalidFileSizeExceptiom extends HttpException {
+export class InvalidFileSizeException extends HttpException {
   constructor(size?: number) {
     super(
       `Payload Too Large, limits ${size} byte`,
