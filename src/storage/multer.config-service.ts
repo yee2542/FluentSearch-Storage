@@ -15,7 +15,7 @@ export class MulterConfigService implements MulterOptionsFactory {
       limits: {
         fileSize: MAX_FILE_SIZE,
       },
-      fileFilter: (req, file, cb) => {
+      fileFilter: (_req, file, cb) => {
         try {
           mimeFileUtils(file.mimetype);
         } catch (error) {
