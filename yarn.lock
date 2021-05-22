@@ -2893,10 +2893,10 @@ fluent-ffmpeg@^2.1.2:
     async ">=0.2.9"
     which "^1.1.1"
 
-fluentsearch-types@^0.6.4:
-  version "0.6.4"
-  resolved "https://registry.yarnpkg.com/fluentsearch-types/-/fluentsearch-types-0.6.4.tgz#1e012eae8d50d31d078be7cef5198fd47f04fff1"
-  integrity sha512-Xa/k4IsyV+2MCx2Zm7j6WzpH0muDxb/laqOjKZ6MNYF9UZTF6k/tPDpOpG/GaTntjTR5Rf3hYa6mCwio6BiYhg==
+fluentsearch-types@^0.6.5:
+  version "0.6.6"
+  resolved "https://registry.yarnpkg.com/fluentsearch-types/-/fluentsearch-types-0.6.6.tgz#0da7ad0890de80d37df1324d3c8dfb6a789aa58c"
+  integrity sha512-K67XuXpdRXy37cUhGJcyz+q7R+kEx8m1DlFWmhy3IkyWYqKuiXYAgvHfE1EIzq1AIxRUJznP05M331IWOjTglQ==
 
 follow-redirects@^1.10.0:
   version "1.14.1"
