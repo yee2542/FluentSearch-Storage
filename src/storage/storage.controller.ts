@@ -19,18 +19,26 @@ import {
 import { Request, Response } from 'express';
 import {
   FileListResponseDTO,
-  FileTypeEnum,
   UserSessionDto,
   ZoneEnum,
 } from 'fluentsearch-types';
+import { Types } from 'mongoose';
+import { MinioService } from 'nestjs-minio-client';
 import { join, resolve } from 'path';
 import { ConfigService } from '../config/config.service';
 import { UserTokenInfo } from './decorators/user-token-info.decorator';
 import { StorageResponseDTO } from './dtos/storage.response.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { StorageService } from './storage.service';
+import mimeFileUtils from './utils/mime-file.utils';
+
 @Controller()
 export class StorageController {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly storageService: StorageService,
+    private readonly minioClient: MinioService,
+  ) {}
 
   @UseGuards(JwtAuthGuard)
   @ApiOperation({
@@ -56,34 +64,72 @@ export class StorageController {
     @Req() req: Request,
     @Res() res: Response,
     @UserTokenInfo() user: UserSessionDto,
-  ): Promise<Response<FileListResponseDTO[]>> {
+  ): Promise<Response<StorageResponseDTO[]>> {
     const logs = files.map(el => ({ ...el, buffer: undefined }));
+    const mappedFiles = files.map(el => ({
+      ...el,
+      _id: Types.ObjectId(),
+      type: mimeFileUtils(el.mimetype),
+    }));
+
+    const now = new Date();
     Logger.verbose(logs, 'Stream [POST]');
+    Logger.verbose(user._id + ' - ' + user.name, 'User');
 
-    const endpoint =
-      this.configService.get().storage_hostname || 'storage.fluentsearch.ml';
-    const userId = Math.random()
-      .toString()
-      .replace('.', '');
-    const fileId = Math.random()
-      .toString()
-      .replace('.', '');
-    const resParsed: FileListResponseDTO[] = files.map(el => ({
-      _id: fileId,
-      original_filename: el.originalname,
+    // bucket validation
+    const valid = await this.minioClient.client.bucketExists(user._id);
+    if (!valid) {
+      Logger.warn('Bucket not existing', 'Minio');
+      Logger.warn('Create new bucket', 'Minio');
+      await this.minioClient.client.makeBucket(user._id, user.zone);
+    }
+
+    // bucket upload
+    const bucketUpload = mappedFiles.map(file =>
+      this.minioClient.client.putObject(
+        user._id,
+        `${file._id.toHexString()}-${file.originalname}`,
+        file.buffer,
+      ),
+    );
+    await Promise.all(bucketUpload);
+
+    // create fluentsearch files
+    const fileMeta = mappedFiles.map(async file => {
+      const meta = await this.storageService.metaParsing(
+        file.type,
+        file.buffer,
+        file.mimetype,
+      );
+      return this.storageService.createMeta({
+        _id: file._id,
+        owner: user._id,
+        original_filename: file.originalname,
+        type: file.type,
+        zone: user.zone,
+        meta,
+      });
+    });
+    await Promise.all(fileMeta);
+
+    // response
+    const endpoint = this.configService.get().storage_hostname;
+    const resParsed: FileListResponseDTO[] = mappedFiles.map(file => ({
+      _id: file._id.toHexString(),
+      original_filename: file.originalname,
       owner: user._id,
-      zone: ZoneEnum.TH,
-      label: el.filename,
-      type: el.mimetype.includes('image')
-        ? FileTypeEnum.Image
-        : FileTypeEnum.Video,
+      zone: (user.zone as unknown) as ZoneEnum,
+      type: file.type,
       refs: undefined,
-
-      uri: join(endpoint, userId, fileId),
-      thumbnail_uri: join(endpoint, userId, fileId, 'thumbnail'),
-
-      createAt: new Date(),
-      updateAt: new Date(),
+      uri: join(endpoint, user._id, file._id.toHexString()),
+      thumbnail_uri: join(
+        endpoint,
+        user._id,
+        file._id.toHexString(),
+        'thumbnail',
+      ),
+      createAt: now,
+      updateAt: now,
     }));
 
     return res.send(resParsed);
