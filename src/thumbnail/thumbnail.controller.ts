@@ -21,8 +21,6 @@ import { JwtAuthGuard } from '../storage/guards/jwt-auth.guard';
 import { StorageService } from '../storage/storage.service';
 import { ThumbnailService } from './thumbnail.service';
 
-export const IMAGE_THUMBNAIL_EXTENSION = 'jpeg';
-
 @Controller()
 export class ThumbnailController {
   constructor(
