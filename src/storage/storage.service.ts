@@ -67,6 +67,15 @@ export class StorageService {
           extension: imageMeta.format,
           contentType,
         } as BaseFileMetaSchema<ImageMeta>;
+      case FileTypeEnum.VideoThumbnail:
+        const imageVideoMeta = await sharp(buffer).metadata();
+        return {
+          width: imageVideoMeta.width,
+          height: imageVideoMeta.height,
+          size: imageVideoMeta.size,
+          extension: imageVideoMeta.format,
+          contentType,
+        } as BaseFileMetaSchema<ImageMeta>;
       case FileTypeEnum.Video:
         const videoMeta = await this.getVideoMeta(buffer);
         const duration = Number(videoMeta.streams[0].duration);
