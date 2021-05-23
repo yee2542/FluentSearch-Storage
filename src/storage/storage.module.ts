@@ -22,6 +22,19 @@ const MinioInstance = MinioModule.registerAsync({
     useSSL: config.get().minio.ssl,
   }),
 });
+
+const JwtInstance = JwtModule.registerAsync({
+  imports: [ConfigModule],
+  inject: [ConfigService],
+  useFactory: (config: ConfigService) => ({
+    secret: config.get().jwt.secretKey,
+    signOptions: {
+      expiresIn: config.get().jwt.expires,
+      algorithm: 'HS256',
+    },
+  }),
+});
+
 @Module({
   imports: [
     ConfigModule,
@@ -31,17 +44,7 @@ const MinioInstance = MinioModule.registerAsync({
         schema: fileSchema,
       },
     ]),
-    JwtModule.registerAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        secret: config.get().jwt.secretKey,
-        signOptions: {
-          expiresIn: config.get().jwt.expires,
-          algorithm: 'HS256',
-        },
-      }),
-    }),
+    JwtInstance,
     MulterModule.registerAsync({
       imports: [ConfigModule],
       useClass: MulterConfigService,
@@ -50,5 +53,6 @@ const MinioInstance = MinioModule.registerAsync({
   ],
   providers: [StorageService],
   controllers: [StorageController],
+  exports: [StorageService, JwtInstance, MinioInstance],
 })
 export class StorageModule {}
