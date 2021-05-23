@@ -27,7 +27,6 @@ export const IMAGE_THUMBNAIL_EXTENSION = 'jpeg';
 @Controller()
 export class ThumbnailController {
   constructor(
-    private readonly configService: ConfigService,
     private readonly storageService: StorageService,
     private readonly minioClient: MinioService,
     private readonly thumbnailService: ThumbnailService,
