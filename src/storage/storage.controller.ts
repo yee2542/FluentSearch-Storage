@@ -69,74 +69,78 @@ export class StorageController {
     @Res() res: Response,
     @UserTokenInfo() user: UserSessionDto,
   ): Promise<Response<StorageResponseDTO[]>> {
-    const logs = files.map(el => ({ ...el, buffer: undefined }));
-    const mappedFiles = files.map(el => ({
-      ...el,
-      _id: Types.ObjectId(),
-      type: mimeFileUtils(el.mimetype),
-    }));
+    try {
+      const logs = files.map(el => ({ ...el, buffer: undefined }));
+      const mappedFiles = files.map(el => ({
+        ...el,
+        _id: Types.ObjectId(),
+        type: mimeFileUtils(el.mimetype),
+      }));
 
-    const now = new Date();
-    Logger.verbose(logs, 'Stream [POST]');
-    Logger.verbose(user._id + ' - ' + user.name, 'User');
+      const now = new Date();
+      Logger.verbose(logs, 'Stream [POST]');
+      Logger.verbose(user._id + ' - ' + user.name, 'User');
 
-    // bucket validation
-    const valid = await this.minioClient.client.bucketExists(user._id);
-    if (!valid) {
-      Logger.warn('Bucket not existing', 'Minio');
-      Logger.warn('Create new bucket', 'Minio');
-      await this.minioClient.client.makeBucket(user._id, user.zone);
-    }
+      // bucket validation
+      const valid = await this.minioClient.client.bucketExists(user._id);
+      if (!valid) {
+        Logger.warn('Bucket not existing', 'Minio');
+        Logger.warn('Create new bucket', 'Minio');
+        await this.minioClient.client.makeBucket(user._id, user.zone);
+      }
 
-    // bucket upload
-    const bucketUpload = mappedFiles.map(file =>
-      this.minioClient.client.putObject(
-        user._id,
-        `${file._id.toHexString()}-${file.originalname}`,
-        file.buffer,
-      ),
-    );
-    await Promise.all(bucketUpload);
-
-    // create fluentsearch files
-    const fileMeta = mappedFiles.map(async file => {
-      const meta = await this.storageService.metaParsing(
-        file.type,
-        file.buffer,
-        file.mimetype,
+      // bucket upload
+      const bucketUpload = mappedFiles.map(file =>
+        this.minioClient.client.putObject(
+          user._id,
+          `${file._id.toHexString()}-${file.originalname}`,
+          file.buffer,
+        ),
       );
-      return this.storageService.createMeta({
-        _id: file._id,
-        owner: user._id,
-        original_filename: file.originalname,
-        type: file.type,
-        zone: user.zone,
-        meta,
+      await Promise.all(bucketUpload);
+
+      // create fluentsearch files
+      const fileMeta = mappedFiles.map(async file => {
+        const meta = await this.storageService.metaParsing(
+          file.type,
+          file.buffer,
+          file.mimetype,
+        );
+        return this.storageService.createMeta({
+          _id: file._id,
+          owner: user._id,
+          original_filename: file.originalname,
+          type: file.type,
+          zone: user.zone,
+          meta,
+        });
       });
-    });
-    await Promise.all(fileMeta);
+      await Promise.all(fileMeta);
 
-    // response
-    const endpoint = this.configService.get().storage_hostname;
-    const resParsed: FileListResponseDTO[] = mappedFiles.map(file => ({
-      _id: file._id.toHexString(),
-      original_filename: file.originalname,
-      owner: user._id,
-      zone: (user.zone as unknown) as ZoneEnum,
-      type: file.type,
-      refs: undefined,
-      uri: join(endpoint, user._id, file._id.toHexString()),
-      thumbnail_uri: join(
-        endpoint,
-        user._id,
-        file._id.toHexString(),
-        'thumbnail',
-      ),
-      createAt: now,
-      updateAt: now,
-    }));
+      // response
+      const endpoint = this.configService.get().storage_hostname;
+      const resParsed: FileListResponseDTO[] = mappedFiles.map(file => ({
+        _id: file._id.toHexString(),
+        original_filename: file.originalname,
+        owner: user._id,
+        zone: (user.zone as unknown) as ZoneEnum,
+        type: file.type,
+        refs: undefined,
+        uri: join(endpoint, user._id, file._id.toHexString()),
+        thumbnail_uri: join(
+          endpoint,
+          user._id,
+          file._id.toHexString(),
+          'thumbnail',
+        ),
+        createAt: now,
+        updateAt: now,
+      }));
 
-    return res.send(resParsed);
+      return res.send(resParsed);
+    } catch (err) {
+      throw new InternalServerErrorException(JSON.stringify(err));
+    }
   }
 
   @UseGuards(JwtAuthGuard)
@@ -147,28 +151,32 @@ export class StorageController {
     @Param('fild_id') fileId: string,
     @UserTokenInfo() user: UserSessionDto,
   ) {
-    if (userParam != user._id) throw new InvalidUserAccessException();
+    try {
+      if (userParam != user._id) throw new InvalidUserAccessException();
 
-    const file = await this.storageService.getFileById(fileId);
-    if (!file) throw new InvalidFileIdException();
-    const bucket = file?.owner;
-    const object = file._id + '-' + file.original_filename;
-    const contentType = file.meta.contentType;
-    res.setHeader('Content-Type', contentType);
+      const file = await this.storageService.getFileById(fileId);
+      if (!file) throw new InvalidFileIdException();
+      const bucket = file?.owner;
+      const object = file._id + '-' + file.original_filename;
+      const contentType = file.meta.contentType;
+      res.setHeader('Content-Type', contentType);
 
-    this.minioClient.client.getObject(bucket, object, (err, stream) => {
-      if (err) {
-        throw new InternalServerErrorException(err);
-      }
-      stream.on('error', streamError => {
-        throw new InternalServerErrorException(streamError);
+      this.minioClient.client.getObject(bucket, object, (err, stream) => {
+        if (err) {
+          throw new InternalServerErrorException(err);
+        }
+        stream.on('error', streamError => {
+          throw new InternalServerErrorException(streamError);
+        });
+        stream.on('data', chunk => {
+          res.write(chunk);
+        });
+        stream.on('end', () => {
+          res.end();
+        });
       });
-      stream.on('data', chunk => {
-        res.write(chunk);
-      });
-      stream.on('end', () => {
-        res.end();
-      });
-    });
+    } catch (err) {
+      throw new InternalServerErrorException(JSON.stringify(err));
+    }
   }
 }
