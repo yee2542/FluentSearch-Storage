@@ -34,7 +34,6 @@ services:
       - '9229:9229'
     volumes:
       - './src:/home/src'
-      - './tmp-app/:/home/tmp-app'
     logging:
       options:
         max-size: 50m
