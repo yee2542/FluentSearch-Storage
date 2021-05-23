@@ -11,9 +11,10 @@ import {
   VideoMeta,
   ZoneEnum,
 } from 'fluentsearch-types';
-import { Model, Types } from 'mongoose';
+import { LeanDocument, Model, Types } from 'mongoose';
 import sharp from 'sharp';
 import { Readable } from 'stream';
+import { InvalidFileIdException } from './exceptions/invalid-file-id.exception';
 
 @Injectable()
 export class StorageService {
@@ -102,5 +103,11 @@ export class StorageService {
       default:
         throw new Error('Bad meta file parsing');
     }
+  }
+
+  async findFileThumbnail(fileId: string): Promise<LeanDocument<FileDocument>> {
+    const file = await this.fileModel.findOne({ refs: fileId }).lean();
+    if (!file) throw new InvalidFileIdException();
+    return file;
   }
 }
