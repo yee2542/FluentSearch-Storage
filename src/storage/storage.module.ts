@@ -53,6 +53,6 @@ const JwtInstance = JwtModule.registerAsync({
   ],
   providers: [StorageService],
   controllers: [StorageController],
-  exports: [StorageService, JwtInstance, MinioInstance],
+  exports: [StorageService, JwtInstance, MinioInstance, ConfigModule],
 })
 export class StorageModule {}
