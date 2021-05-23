@@ -105,9 +105,31 @@ export class StorageService {
     }
   }
 
-  async findFileThumbnail(fileId: string): Promise<LeanDocument<FileDocument>> {
+  async findFileThumbnail(
+    fileId: string,
+  ): Promise<LeanDocument<FileDocument> | null> {
     const file = await this.fileModel.findOne({ refs: fileId }).lean();
-    if (!file) throw new InvalidFileIdException();
     return file;
+  }
+
+  async createThumbnail(
+    refs: string,
+    type: FileTypeEnum,
+    meta: Record<string, any>,
+  ): Promise<FileDocument> {
+    const parentDoc = await this.fileModel.findById(refs).lean();
+    if (!parentDoc) throw new InvalidFileIdException();
+    const parentDocNoId = { ...parentDoc, _id: undefined };
+    const doc = await this.fileModel.create({
+      ...parentDocNoId,
+      type,
+      refs,
+      meta: {
+        ...parentDoc.meta,
+        meta,
+      },
+    });
+
+    return doc.save();
   }
 }
