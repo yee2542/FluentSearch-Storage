@@ -8,7 +8,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '../config/config.service';
 import { MinioModule } from 'nestjs-minio-client';
 import { MongooseModule } from '@nestjs/mongoose';
-import fileSchema, { FILES_SCHEMA_NAME } from './schemas/file.schema';
+import { FILES_SCHEMA_NAME } from 'fluentsearch-types';
+import fileSchema from 'fluentsearch-types/dist/entity/file.entity';
 
 const MinioInstance = MinioModule.registerAsync({
   imports: [ConfigModule],
