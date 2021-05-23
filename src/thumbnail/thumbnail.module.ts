@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
-import { ThumbnailService } from './thumbnail.service';
+import { StorageModule } from '../storage/storage.module';
 import { ThumbnailController } from './thumbnail.controller';
+import { ThumbnailService } from './thumbnail.service';
 
 @Module({
+  imports: [StorageModule],
   providers: [ThumbnailService],
-  controllers: [ThumbnailController]
+  controllers: [ThumbnailController],
 })
 export class ThumbnailModule {}
