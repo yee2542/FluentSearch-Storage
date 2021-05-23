@@ -2,6 +2,8 @@ import {
   BadRequestException,
   Controller,
   Get,
+  InternalServerErrorException,
+  Logger,
   Param,
   Res,
   UseGuards,
@@ -38,91 +40,98 @@ export class ThumbnailController {
     @Param('fild_id') fileId: string,
     @UserTokenInfo() user: UserSessionDto,
   ) {
-    if (userId != user._id) throw new InvalidUserAccessException();
-    const parentFile = await this.storageService.getFileById(fileId);
-    if (!parentFile) throw new InvalidFileIdException();
-    const bucket = parentFile?.owner;
-    const object = parentFile._id + '-' + parentFile.original_filename;
+    try {
+      if (userId != user._id) throw new InvalidUserAccessException();
+      const parentFile = await this.storageService.getFileById(fileId);
+      if (!parentFile) throw new InvalidFileIdException();
+      const bucket = parentFile?.owner;
+      const object = parentFile._id + '-' + parentFile.original_filename;
 
-    const fileType = parentFile.type;
-    // check thumbnail is already create
-    const thumbnailExist = await this.storageService.findFileThumbnail(fileId);
-
-    // IMAGE THUMBNAIL
-    if (!thumbnailExist && fileType === FileTypeEnum.Image) {
-      const objParentFile = await getObjectStreamToBuffer(
-        this.minioClient.client,
-        bucket,
-        object,
+      const fileType = parentFile.type;
+      // check thumbnail is already create
+      const thumbnailExist = await this.storageService.findFileThumbnail(
+        fileId,
       );
 
-      const objParentFileBuffer = objParentFile;
-      const thumbnailFile = await sharp(objParentFileBuffer)
-        .resize(200)
-        .jpeg()
-        .toBuffer();
-      const metaParsed = await this.storageService.metaParsing(
-        fileType,
-        thumbnailFile,
-        'image/jpeg',
-      );
-      const thumbnailMeta = await this.storageService.createThumbnail(
-        parentFile._id,
-        FileTypeEnum.ImageThumbnail,
-        metaParsed,
-      );
+      // IMAGE THUMBNAIL
+      if (!thumbnailExist && fileType === FileTypeEnum.Image) {
+        const objParentFile = await getObjectStreamToBuffer(
+          this.minioClient.client,
+          bucket,
+          object,
+        );
 
-      //   upload thumbnail
-      const thumbnailObjectFilename = thumbnailObjectFilenameUtil(
-        thumbnailMeta,
-        FileTypeEnum.ImageThumbnail,
-      );
-      await this.minioClient.client.putObject(
-        user._id,
-        thumbnailObjectFilename,
-        thumbnailFile,
-      );
-      res.setHeader('Content-Type', 'image/jpeg');
-      return res.end(thumbnailFile, 'binary');
+        const objParentFileBuffer = objParentFile;
+        const thumbnailFile = await sharp(objParentFileBuffer)
+          .resize(200)
+          .jpeg()
+          .toBuffer();
+        const metaParsed = await this.storageService.metaParsing(
+          fileType,
+          thumbnailFile,
+          'image/jpeg',
+        );
+        const thumbnailMeta = await this.storageService.createThumbnail(
+          parentFile._id,
+          FileTypeEnum.ImageThumbnail,
+          metaParsed,
+        );
+
+        //   upload thumbnail
+        const thumbnailObjectFilename = thumbnailObjectFilenameUtil(
+          thumbnailMeta,
+          FileTypeEnum.ImageThumbnail,
+        );
+        await this.minioClient.client.putObject(
+          user._id,
+          thumbnailObjectFilename,
+          thumbnailFile,
+        );
+        res.setHeader('Content-Type', 'image/jpeg');
+        return res.end(thumbnailFile, 'binary');
+      }
+      if (thumbnailExist && fileType === FileTypeEnum.Image) {
+        const thumbnailObjectFilename = thumbnailObjectFilenameUtil(
+          thumbnailExist,
+          FileTypeEnum.ImageThumbnail,
+        );
+        const thumbnailObjFile = await getObjectStreamToBuffer(
+          this.minioClient.client,
+          bucket,
+          thumbnailObjectFilename,
+        );
+        res.setHeader('Content-Type', 'image/jpeg');
+        return res.end(thumbnailObjFile, 'binary');
+      }
+
+      // VIDEO THUMBNAIL
+      if (!thumbnailExist && FileTypeEnum.Video) {
+        const videoThumbnailBuffer = await this.thumbnailService.getVideoThumbnail(
+          user._id,
+          parentFile._id,
+        );
+        res.setHeader('Content-Type', 'image/gif');
+        return res.end(videoThumbnailBuffer, 'binary');
+      }
+
+      if (thumbnailExist && FileTypeEnum.Video) {
+        const thumbnailObjectFilename = thumbnailObjectFilenameUtil(
+          thumbnailExist,
+          FileTypeEnum.VideoThumbnail,
+        );
+        const thumbnailObjFile = await getObjectStreamToBuffer(
+          this.minioClient.client,
+          bucket,
+          thumbnailObjectFilename,
+        );
+        res.setHeader('Content-Type', 'image/gif');
+        return res.end(thumbnailObjFile, 'binary');
+      }
+
+      throw new BadRequestException('Bad thumbnail access');
+    } catch (err) {
+      Logger.error(err);
+      throw new InternalServerErrorException(JSON.stringify(err));
     }
-    if (thumbnailExist && fileType === FileTypeEnum.Image) {
-      const thumbnailObjectFilename = thumbnailObjectFilenameUtil(
-        thumbnailExist,
-        FileTypeEnum.ImageThumbnail,
-      );
-      const thumbnailObjFile = await getObjectStreamToBuffer(
-        this.minioClient.client,
-        bucket,
-        thumbnailObjectFilename,
-      );
-      res.setHeader('Content-Type', 'image/jpeg');
-      return res.end(thumbnailObjFile, 'binary');
-    }
-
-    // VIDEO THUMBNAIL
-    if (!thumbnailExist && FileTypeEnum.Video) {
-      const videoThumbnailBuffer = await this.thumbnailService.getVideoThumbnail(
-        user._id,
-        parentFile._id,
-      );
-      res.setHeader('Content-Type', 'image/gif');
-      return res.end(videoThumbnailBuffer, 'binary');
-    }
-
-    if (thumbnailExist && FileTypeEnum.Video) {
-      const thumbnailObjectFilename = thumbnailObjectFilenameUtil(
-        thumbnailExist,
-        FileTypeEnum.VideoThumbnail,
-      );
-      const thumbnailObjFile = await getObjectStreamToBuffer(
-        this.minioClient.client,
-        bucket,
-        thumbnailObjectFilename,
-      );
-      res.setHeader('Content-Type', 'image/gif');
-      return res.end(thumbnailObjFile, 'binary');
-    }
-
-    throw new BadRequestException('Bad thumbnail access');
   }
 }
