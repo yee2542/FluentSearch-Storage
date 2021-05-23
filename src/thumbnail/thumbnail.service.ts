@@ -36,9 +36,9 @@ export class ThumbnailService {
     return fileOutputPath;
   }
 
-  private deleteTempVideo(path: string): Promise<boolean> {
+  private deleteTempVideo(unlinkPath: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      unlink(path, err => {
+      unlink(unlinkPath, err => {
         if (err) return reject(err);
         resolve(true);
       });

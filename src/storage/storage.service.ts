@@ -117,8 +117,7 @@ export class StorageService {
   async findFileThumbnail(
     fileId: string,
   ): Promise<LeanDocument<FileDocument> | null> {
-    const file = await this.fileModel.findOne({ refs: fileId }).lean();
-    return file;
+    return this.fileModel.findOne({ refs: fileId }).lean();
   }
 
   async createThumbnail(
