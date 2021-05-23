@@ -4,6 +4,7 @@ import { FileTypeEnum, UserSessionDto } from 'fluentsearch-types';
 import { MinioService } from 'nestjs-minio-client';
 import sharp from 'sharp';
 import getObjectStreamToBuffer from '../common/getObjectStreamToBuffer';
+import thumbnailObjectFilenameUtil from '../common/thumbnailObjectFilename.util';
 import { ConfigService } from '../config/config.service';
 import { UserTokenInfo } from '../storage/decorators/user-token-info.decorator';
 import { InvalidFileIdException } from '../storage/exceptions/invalid-file-id.exception';
@@ -65,9 +66,10 @@ export class ThumbnailController {
       );
 
       //   upload thumbnail
-      const thumbnailObjectFilename = `${thumbnailMeta._id.toHexString()}-${
-        thumbnailMeta.original_filename
-      }-${FileTypeEnum.ImageThumbnail}.${IMAGE_THUMBNAIL_EXTENSION}`;
+      const thumbnailObjectFilename = thumbnailObjectFilenameUtil(
+        thumbnailMeta,
+        FileTypeEnum.ImageThumbnail,
+      );
       await this.minioClient.client.putObject(
         user._id,
         thumbnailObjectFilename,
@@ -77,9 +79,10 @@ export class ThumbnailController {
     }
 
     if (thumbnailExist && fileType === FileTypeEnum.Image) {
-      const thumbnailObjectFilename = `${thumbnailExist._id.toHexString()}-${
-        thumbnailExist.original_filename
-      }-${FileTypeEnum.ImageThumbnail}.${IMAGE_THUMBNAIL_EXTENSION}`;
+      const thumbnailObjectFilename = thumbnailObjectFilenameUtil(
+        thumbnailExist,
+        FileTypeEnum.ImageThumbnail,
+      );
       const thumbnailObjFile = await getObjectStreamToBuffer(
         this.minioClient.client,
         bucket,
