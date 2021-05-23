@@ -1,4 +1,11 @@
-import { Controller, Get, Param, Res, UseGuards } from '@nestjs/common';
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  Param,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { Response } from 'express';
 import { FileTypeEnum, UserSessionDto } from 'fluentsearch-types';
 import { MinioService } from 'nestjs-minio-client';
@@ -11,6 +18,7 @@ import { InvalidFileIdException } from '../storage/exceptions/invalid-file-id.ex
 import { InvalidUserAccessException } from '../storage/exceptions/invalid-user-access.exception';
 import { JwtAuthGuard } from '../storage/guards/jwt-auth.guard';
 import { StorageService } from '../storage/storage.service';
+import { ThumbnailService } from './thumbnail.service';
 
 export const IMAGE_THUMBNAIL_EXTENSION = 'jpeg';
 
@@ -20,6 +28,7 @@ export class ThumbnailController {
     private readonly configService: ConfigService,
     private readonly storageService: StorageService,
     private readonly minioClient: MinioService,
+    private readonly thumbnailService: ThumbnailService,
   ) {}
   @UseGuards(JwtAuthGuard)
   @Get('/:user/:fild_id/thumbnail')
@@ -34,8 +43,6 @@ export class ThumbnailController {
     if (!parentFile) throw new InvalidFileIdException();
     const bucket = parentFile?.owner;
     const object = parentFile._id + '-' + parentFile.original_filename;
-    const contentType = parentFile.meta.contentType;
-    res.setHeader('Content-Type', contentType);
 
     const fileType = parentFile.type;
     // check thumbnail is already create
@@ -75,9 +82,9 @@ export class ThumbnailController {
         thumbnailObjectFilename,
         thumbnailFile,
       );
+      res.setHeader('Content-Type', 'image/jpeg');
       return res.end(thumbnailFile, 'binary');
     }
-
     if (thumbnailExist && fileType === FileTypeEnum.Image) {
       const thumbnailObjectFilename = thumbnailObjectFilenameUtil(
         thumbnailExist,
@@ -88,9 +95,34 @@ export class ThumbnailController {
         bucket,
         thumbnailObjectFilename,
       );
+      res.setHeader('Content-Type', 'image/jpeg');
       return res.end(thumbnailObjFile, 'binary');
     }
 
     // VIDEO THUMBNAIL
+    if (!thumbnailExist && FileTypeEnum.Video) {
+      const videoThumbnailBuffer = await this.thumbnailService.getVideoThumbnail(
+        user._id,
+        parentFile._id,
+      );
+      res.setHeader('Content-Type', 'image/gif');
+      return res.end(videoThumbnailBuffer, 'binary');
+    }
+
+    if (thumbnailExist && FileTypeEnum.Video) {
+      const thumbnailObjectFilename = thumbnailObjectFilenameUtil(
+        thumbnailExist,
+        FileTypeEnum.VideoThumbnail,
+      );
+      const thumbnailObjFile = await getObjectStreamToBuffer(
+        this.minioClient.client,
+        bucket,
+        thumbnailObjectFilename,
+      );
+      res.setHeader('Content-Type', 'image/gif');
+      return res.end(thumbnailObjFile, 'binary');
+    }
+
+    throw new BadRequestException('Bad thumbnail access');
   }
 }
