@@ -11,9 +11,10 @@ import {
   VideoMeta,
   ZoneEnum,
 } from 'fluentsearch-types';
-import { Model, Types } from 'mongoose';
+import { LeanDocument, Model, Types } from 'mongoose';
 import sharp from 'sharp';
 import { Readable } from 'stream';
+import { InvalidFileIdException } from './exceptions/invalid-file-id.exception';
 
 @Injectable()
 export class StorageService {
@@ -66,6 +67,15 @@ export class StorageService {
           extension: imageMeta.format,
           contentType,
         } as BaseFileMetaSchema<ImageMeta>;
+      case FileTypeEnum.VideoThumbnail:
+        const imageVideoMeta = await sharp(buffer).metadata();
+        return {
+          width: imageVideoMeta.width,
+          height: imageVideoMeta.height,
+          size: imageVideoMeta.size,
+          extension: imageVideoMeta.format,
+          contentType,
+        } as BaseFileMetaSchema<ImageMeta>;
       case FileTypeEnum.Video:
         const videoMeta = await this.getVideoMeta(buffer);
         const duration = Number(videoMeta.streams[0].duration);
@@ -102,5 +112,32 @@ export class StorageService {
       default:
         throw new Error('Bad meta file parsing');
     }
+  }
+
+  async findFileThumbnail(
+    fileId: string,
+  ): Promise<LeanDocument<FileDocument> | null> {
+    return this.fileModel.findOne({ refs: fileId }).lean();
+  }
+
+  async createThumbnail(
+    refs: string,
+    type: FileTypeEnum,
+    meta: Record<string, any>,
+  ): Promise<FileDocument> {
+    const parentDoc = await this.fileModel.findById(refs).lean();
+    if (!parentDoc) throw new InvalidFileIdException();
+    const parentDocNoId = { ...parentDoc, _id: undefined };
+    const doc = await this.fileModel.create({
+      ...parentDocNoId,
+      type,
+      refs,
+      meta: {
+        ...parentDoc.meta,
+        meta,
+      },
+    });
+
+    return doc.save();
   }
 }
