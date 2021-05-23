@@ -14,7 +14,6 @@ import { MinioService } from 'nestjs-minio-client';
 import sharp from 'sharp';
 import getObjectStreamToBuffer from '../common/getObjectStreamToBuffer';
 import thumbnailObjectFilenameUtil from '../common/thumbnailObjectFilename.util';
-import { ConfigService } from '../config/config.service';
 import { UserTokenInfo } from '../storage/decorators/user-token-info.decorator';
 import { InvalidFileIdException } from '../storage/exceptions/invalid-file-id.exception';
 import { InvalidUserAccessException } from '../storage/exceptions/invalid-user-access.exception';
