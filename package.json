@@ -36,7 +36,7 @@
     "class-validator": "^0.13.1",
     "cookie-parser": "^1.4.5",
     "fluent-ffmpeg": "^2.1.2",
-    "fluentsearch-types": "^0.8.5",
+    "fluentsearch-types": "^0.8.6",
     "gifencoder": "^2.0.1",
     "minio": "^7.0.18",
     "mongoose": "^5.12.10",
