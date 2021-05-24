@@ -152,32 +152,30 @@ export class StorageController {
     @Param('fild_id') fileId: string,
     @UserTokenInfo() user: UserSessionDto,
   ) {
-    try {
-      if (userParam != user._id) throw new InvalidUserAccessException();
+    if (userParam != user._id) throw new InvalidUserAccessException();
 
-      const file = await this.storageService.getFileById(fileId);
-      if (!file) throw new InvalidFileIdException();
-      const bucket = file?.owner;
-      const object = file._id + '-' + file.original_filename;
-      const contentType = file.meta.contentType;
-      res.setHeader('Content-Type', contentType);
+    const file = await this.storageService.getFileById(fileId);
+    if (!file) throw new InvalidFileIdException();
+    const bucket = file?.owner;
+    const object = file._id + '-' + file.original_filename;
+    const contentType = file.meta.contentType;
+    res.setHeader('Content-Type', contentType);
 
-      this.minioClient.client.getObject(bucket, object, (err, stream) => {
-        if (err) {
-          res.sendStatus(500).send(err);
-        }
-        stream.on('error', streamError => {
-          res.sendStatus(500).send(streamError);
-        });
-        stream.on('data', chunk => {
-          res.write(chunk);
-        });
-        stream.on('end', () => {
-          res.end();
-        });
+    this.minioClient.client.getObject(bucket, object, (err, stream) => {
+      if (err) {
+        Logger.error(err);
+        return res.sendStatus(500);
+      }
+      stream.on('error', streamError => {
+        Logger.error(streamError);
+        return res.sendStatus(500);
       });
-    } catch (err) {
-      throw new InternalServerErrorException(JSON.stringify(err));
-    }
+      stream.on('data', chunk => {
+        res.write(chunk);
+      });
+      stream.on('end', () => {
+        res.end();
+      });
+    });
   }
 }
