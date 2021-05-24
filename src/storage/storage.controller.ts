@@ -90,18 +90,15 @@ export class StorageController {
       }
 
       // bucket upload
-      try {
-        const bucketUpload = mappedFiles.map(file =>
-          this.minioClient.client.putObject(
-            user._id,
-            `${file._id.toHexString()}-${file.originalname}`,
-            file.buffer,
-          ),
-        );
-        await Promise.all(bucketUpload);
-      } catch (err) {
-        throw new InternalServerErrorException(JSON.stringify(err));
-      }
+
+      const bucketUpload = mappedFiles.map(file =>
+        this.minioClient.client.putObject(
+          user._id,
+          `${file._id.toHexString()}-${file.originalname}`,
+          file.buffer,
+        ),
+      );
+      await Promise.all(bucketUpload);
 
       // create fluentsearch files
       const fileMeta = mappedFiles.map(async file => {
@@ -167,10 +164,10 @@ export class StorageController {
 
       this.minioClient.client.getObject(bucket, object, (err, stream) => {
         if (err) {
-          throw new InternalServerErrorException(err);
+          res.sendStatus(500).send(err);
         }
         stream.on('error', streamError => {
-          throw new InternalServerErrorException(streamError);
+          res.sendStatus(500).send(streamError);
         });
         stream.on('data', chunk => {
           res.write(chunk);
