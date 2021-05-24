@@ -27,7 +27,7 @@ services:
       MINIO_SERVER_SSL: 'false'
       RABBITMQ_CONNECTION: 'mq://rabbitmq'
       RABBITMQ_USERNAME: 'root'
-      RABBITMQ_PASSWORD: 'Fluent$earch@RabbitMQ'
+      RABBITMQ_PASSWORD: 'FluentSearchRabbitMQ'
     build:
       context: ./
       dockerfile: Dockerfile
@@ -96,5 +96,5 @@ services:
       - '15672:15672'
     environment:
       TZ: Asia/Bangkok
-      RABBITMQ_USERNAME: 'root'
-      RABBITMQ_PASSWORD: 'Fluent$earch@RabbitMQ'
+      RABBITMQ_USERNAME: root
+      RABBITMQ_PASSWORD: FluentSearchRabbitMQ
