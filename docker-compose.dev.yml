@@ -85,3 +85,11 @@ services:
       MINIO_SERVER_HOST: 'minio'
     ports:
       - '9000:9000'
+  rabbitmq:
+    image: bitnami/rabbitmq:3.8
+    volumes:
+      - ./mq/:/bitnami
+    environment:
+      TZ: Asia/Bangkok
+      RABBITMQ_USERNAME: root
+      RABBITMQ_PASSWORD: Fluent$earch@RabbitMQ
