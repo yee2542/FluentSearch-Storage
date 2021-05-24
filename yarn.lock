@@ -656,15 +656,6 @@
   resolved "https://registry.yarnpkg.com/@nestjs/mapped-types/-/mapped-types-0.4.0.tgz#352b9a661d6d36863cf48b2057616cef1b2c802d"
   integrity sha512-TVtd/aTb7EqPhVczdeuvzF9dY0fyE3ivvCstc2eO+AkNqrfzSG1kXYYiUUznKjd0qDa8g2TmPSmHUQ21AXsV1Q==
 
-"@nestjs/microservices@^7.6.17":
-  version "7.6.17"
-  resolved "https://registry.yarnpkg.com/@nestjs/microservices/-/microservices-7.6.17.tgz#9175250708ca14f7fc2f6e81076ce8ddc8a47fc2"
-  integrity sha512-jyIC0TSgKv8eTg7ZGif3oENnx+TPQCurEiiQRCcFcT+EOBMJ+L7Xb8fjXTJM+Ul8jUucYyQpDeMQTJI+bmDGoA==
-  dependencies:
-    iterare "1.2.1"
-    json-socket "0.3.0"
-    tslib "2.2.0"
-
 "@nestjs/mongoose@^7.2.4":
   version "7.2.4"
   resolved "https://registry.yarnpkg.com/@nestjs/mongoose/-/mongoose-7.2.4.tgz#60a50532a244279703344368d74ecd802aeda4a4"
@@ -1319,7 +1310,7 @@ ajv@6.12.6, ajv@^6.10.0, ajv@^6.10.2, ajv@^6.12.2, ajv@^6.12.3, ajv@^6.12.5:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-amqp-connection-manager@^3.0.0, amqp-connection-manager@^3.2.2:
+amqp-connection-manager@^3.0.0:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/amqp-connection-manager/-/amqp-connection-manager-3.2.2.tgz#73c820b6ed440b451de24c1eb9cf3541a10635d9"
   integrity sha512-o+6Kb4p+xFYwU8MuFxnrPQzhefCE2dcCd8dnevWLTRgQCtOTVC9AQ434hQyjB+Bpq6Vl9cDMWTOZT11ajB6ZSg==
@@ -1330,18 +1321,6 @@ amqplib@^0.7.1:
   version "0.7.1"
   resolved "https://registry.yarnpkg.com/amqplib/-/amqplib-0.7.1.tgz#1ac60934cbddb445bdc9c648310a0d232a53b3af"
   integrity sha512-KePK3tTOLGU4emTo+PwSDMbc123jrxo13FpRpim1LzJoSlQrIBB2/kMeCC40jK/Zb0olHGaABjLqXDsdK46iLA==
-  dependencies:
-    bitsyntax "~0.1.0"
-    bluebird "^3.7.2"
-    buffer-more-ints "~1.0.0"
-    readable-stream "1.x >=1.1.9"
-    safe-buffer "~5.2.1"
-    url-parse "~1.5.1"
-
-amqplib@^0.8.0:
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/amqplib/-/amqplib-0.8.0.tgz#088d10bc61cc5ac5a49ac72033c7ac66c23aeb61"
-  integrity sha512-icU+a4kkq4Y1PS4NNi+YPDMwdlbFcZ1EZTQT2nigW3fvOb6AOgUQ9+Mk4ue0Zu5cBg/XpDzB40oH10ysrk2dmA==
   dependencies:
     bitsyntax "~0.1.0"
     bluebird "^3.7.2"
@@ -4300,11 +4279,6 @@ json-schema@0.2.3:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/json-schema/-/json-schema-0.2.3.tgz#b480c892e59a2f05954ce727bd3f2a4e882f9e13"
   integrity sha1-tIDIkuWaLwWVTOcnvT8qTogvnhM=
-
-json-socket@0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/json-socket/-/json-socket-0.3.0.tgz#f4b953c685bb8e8bd0b72438f5208d9a0799ae07"
-  integrity sha512-jc8ZbUnYIWdxERFWQKVgwSLkGSe+kyzvmYxwNaRgx/c8NNyuHes4UHnPM3LUrAFXUx1BhNJ94n1h/KCRlbvV0g==
 
 json-stable-stringify-without-jsonify@^1.0.1:
   version "1.0.1"
