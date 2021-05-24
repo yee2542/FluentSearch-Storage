@@ -21,7 +21,7 @@ export type ConfigAppProviderType = {
     ssl: boolean;
   };
   rabbitmq: {
-    connection: string;
+    endpoint: string;
     username: string;
     password: string;
   };
