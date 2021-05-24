@@ -20,6 +20,9 @@ export class ConfigService {
       MINIO_SECRET_KEY,
       MINIO_SERVER_PORT,
       MINIO_SERVER_SSL,
+      RABBITMQ_CONNECTION,
+      RABBITMQ_USERNAME,
+      RABBITMQ_PASSWORD,
     } = process.env as ConfigEnvType;
     return {
       database: {
@@ -44,6 +47,11 @@ export class ConfigService {
         secret_key: MINIO_SECRET_KEY,
         port: Number(MINIO_SERVER_PORT),
         ssl: MINIO_SERVER_SSL === 'true',
+      },
+      rabbitmq: {
+        connection: RABBITMQ_CONNECTION,
+        username: RABBITMQ_USERNAME,
+        password: RABBITMQ_PASSWORD,
       },
     };
   }
