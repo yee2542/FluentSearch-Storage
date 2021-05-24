@@ -92,6 +92,8 @@ services:
     image: bitnami/rabbitmq:3.8
     volumes:
       - ./mq/:/bitnami
+    ports:
+      - '15672:15672'
     environment:
       TZ: Asia/Bangkok
       RABBITMQ_USERNAME: 'root'
