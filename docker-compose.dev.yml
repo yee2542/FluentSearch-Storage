@@ -25,6 +25,9 @@ services:
       MINIO_SERVER_ENDPOINT: 'minio'
       MINIO_SERVER_PORT: 9000
       MINIO_SERVER_SSL: 'false'
+      RABBITMQ_ENDPOINT: 'rabbitmq'
+      RABBITMQ_USERNAME: 'root'
+      RABBITMQ_PASSWORD: 'FluentSearchRabbitMQ'
     build:
       context: ./
       dockerfile: Dockerfile
@@ -85,3 +88,13 @@ services:
       MINIO_SERVER_HOST: 'minio'
     ports:
       - '9000:9000'
+  rabbitmq:
+    image: bitnami/rabbitmq:3.8
+    volumes:
+      - ./mq/:/bitnami
+    ports:
+      - '15672:15672'
+    environment:
+      TZ: Asia/Bangkok
+      RABBITMQ_USERNAME: root
+      RABBITMQ_PASSWORD: FluentSearchRabbitMQ

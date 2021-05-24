@@ -1,15 +1,16 @@
+import { RabbitMQModule } from '@golevelup/nestjs-rabbitmq';
 import { Module } from '@nestjs/common';
-import { MulterModule } from '@nestjs/platform-express';
-import { ConfigModule } from '../config/config.module';
-import { MulterConfigService } from './multer.config-service';
-import { StorageService } from './storage.service';
-import { StorageController } from './storage.controller';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigService } from '../config/config.service';
-import { MinioModule } from 'nestjs-minio-client';
 import { MongooseModule } from '@nestjs/mongoose';
-import { FILES_SCHEMA_NAME } from 'fluentsearch-types';
+import { MulterModule } from '@nestjs/platform-express';
+import { EXCHANGE_UPLOAD, FILES_SCHEMA_NAME } from 'fluentsearch-types';
 import fileSchema from 'fluentsearch-types/dist/entity/file.entity';
+import { MinioModule } from 'nestjs-minio-client';
+import { ConfigModule } from '../config/config.module';
+import { ConfigService } from '../config/config.service';
+import { MulterConfigService } from './multer.config-service';
+import { StorageController } from './storage.controller';
+import { StorageService } from './storage.service';
 
 const MinioInstance = MinioModule.registerAsync({
   imports: [ConfigModule],
@@ -35,6 +36,18 @@ const JwtInstance = JwtModule.registerAsync({
   }),
 });
 
+const RabbitInstance = RabbitMQModule.forRootAsync(RabbitMQModule, {
+  imports: [ConfigModule],
+  inject: [ConfigService],
+  useFactory: (configSerivce: ConfigService) => {
+    const config = configSerivce.get().rabbitmq;
+    return {
+      uri: `amqp://${config.username}:${config.password}@${config.endpoint}:5672`,
+
+      exchanges: [{ name: EXCHANGE_UPLOAD, type: 'direct' }],
+    };
+  },
+});
 @Module({
   imports: [
     ConfigModule,
@@ -50,9 +63,16 @@ const JwtInstance = JwtModule.registerAsync({
       useClass: MulterConfigService,
     }),
     MinioInstance,
+    RabbitInstance,
   ],
   providers: [StorageService],
   controllers: [StorageController],
-  exports: [StorageService, JwtInstance, MinioInstance, ConfigModule],
+  exports: [
+    StorageService,
+    JwtInstance,
+    MinioInstance,
+    ConfigModule,
+    RabbitInstance,
+  ],
 })
 export class StorageModule {}

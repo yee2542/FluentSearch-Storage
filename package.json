@@ -21,6 +21,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@golevelup/nestjs-rabbitmq": "^1.16.2",
     "@nestjs/common": "^7.0.0",
     "@nestjs/core": "^7.0.0",
     "@nestjs/jwt": "^7.2.0",
@@ -32,7 +33,7 @@
     "class-validator": "^0.13.1",
     "cookie-parser": "^1.4.5",
     "fluent-ffmpeg": "^2.1.2",
-    "fluentsearch-types": "^0.8.2",
+    "fluentsearch-types": "^0.8.6",
     "gifencoder": "^2.0.1",
     "minio": "^7.0.18",
     "mongoose": "^5.12.10",

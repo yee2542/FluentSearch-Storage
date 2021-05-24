@@ -20,4 +20,9 @@ export type ConfigAppProviderType = {
     port: number;
     ssl: boolean;
   };
+  rabbitmq: {
+    endpoint: string;
+    username: string;
+    password: string;
+  };
 };

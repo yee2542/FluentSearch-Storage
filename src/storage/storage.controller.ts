@@ -1,3 +1,4 @@
+import { AmqpConnection } from '@golevelup/nestjs-rabbitmq';
 import {
   Controller,
   Get,
@@ -20,13 +21,18 @@ import {
 } from '@nestjs/swagger';
 import { Request, Response } from 'express';
 import {
+  EXCHANGE_UPLOAD,
   FileListResponseDTO,
+  TaskDTO,
+  TaskStateEnum,
+  TaskTypeEnum,
   UserSessionDto,
   ZoneEnum,
 } from 'fluentsearch-types';
 import { Types } from 'mongoose';
 import { MinioService } from 'nestjs-minio-client';
 import { join } from 'path';
+import { URL } from 'url';
 import { ConfigService } from '../config/config.service';
 import { UserTokenInfo } from './decorators/user-token-info.decorator';
 import { StorageResponseDTO } from './dtos/storage.response.dto';
@@ -36,12 +42,15 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { StorageService } from './storage.service';
 import mimeFileUtils from './utils/mime-file.utils';
 
+export const CONNECTION_SCHEMA = 'http://';
+
 @Controller()
 export class StorageController {
   constructor(
     private readonly configService: ConfigService,
     private readonly storageService: StorageService,
     private readonly minioClient: MinioService,
+    private readonly amqpConnection: AmqpConnection,
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -107,6 +116,7 @@ export class StorageController {
           file.buffer,
           file.mimetype,
         );
+
         return this.storageService.createMeta({
           _id: file._id,
           owner: user._id,
@@ -127,7 +137,10 @@ export class StorageController {
         zone: (user.zone as unknown) as ZoneEnum,
         type: file.type,
         refs: undefined,
-        uri: join(endpoint, user._id, file._id.toHexString()),
+        uri: new URL(
+          join(user._id, file._id.toHexString()),
+          CONNECTION_SCHEMA + endpoint,
+        ).href,
         thumbnail_uri: join(
           endpoint,
           user._id,
@@ -137,6 +150,28 @@ export class StorageController {
         createAt: now,
         updateAt: now,
       }));
+
+      // send message to mq
+      const messages = mappedFiles.map(file => {
+        const parsed: TaskDTO = {
+          _id: Types.ObjectId().toHexString(),
+          label: `upload-${file._id}-${file.originalname}`,
+          owner: user._id,
+          state: TaskStateEnum.finish,
+
+          priority: 0,
+          type: TaskTypeEnum.storage,
+          uri: new URL(
+            join(user._id, file._id.toHexString()),
+            CONNECTION_SCHEMA + endpoint,
+          ).href,
+          fileId: file._id.toHexString(),
+          createAt: now,
+          updateAt: now,
+        };
+        return this.amqpConnection.publish(EXCHANGE_UPLOAD, '', parsed);
+      });
+      await Promise.all(messages);
 
       return res.send(resParsed);
     } catch (err) {
