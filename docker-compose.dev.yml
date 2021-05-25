@@ -17,8 +17,8 @@ services:
       JWT_EXPIRES: 300000
       SESSION_SECRET: session1secret
       SESSION_EXPIRES: 86400000
-      STORAGE_ENDPOINT: storage.fluentsearch.ml
-      STORAGE_HOSTNAME: 'storage.fluentsearch.ml'
+      STORAGE_ENDPOINT: localhost:3000
+      STORAGE_HOSTNAME: localhost:3000
       PORT: 3000
       MINIO_ACCESS_KEY: 'root'
       MINIO_SECRET_KEY: '12345678'

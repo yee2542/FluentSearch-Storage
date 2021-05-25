@@ -141,12 +141,10 @@ export class StorageController {
           join(user._id, file._id.toHexString()),
           CONNECTION_SCHEMA + endpoint,
         ).href,
-        thumbnail_uri: join(
-          endpoint,
-          user._id,
-          file._id.toHexString(),
-          'thumbnail',
-        ),
+        thumbnail_uri: new URL(
+          join(user._id, file._id.toHexString(), 'thumbnail'),
+          CONNECTION_SCHEMA + endpoint,
+        ).href,
         createAt: now,
         updateAt: now,
       }));
