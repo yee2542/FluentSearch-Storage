@@ -28,16 +28,16 @@ export class ThumbnailController {
     private readonly minioClient: MinioService,
     private readonly thumbnailService: ThumbnailService,
   ) {}
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get('/:user/:fild_id/thumbnail')
   async sendThumbnailFile(
     @Res() res: Response,
     @Param('user') userId: string,
     @Param('fild_id') fileId: string,
-    @UserTokenInfo() user: UserSessionDto,
+    // @UserTokenInfo() user: UserSessionDto,
   ) {
     try {
-      if (userId != user._id) throw new InvalidUserAccessException();
+      // if (userId != user._id) throw new InvalidUserAccessException();
       const parentFile = await this.storageService.getFileById(fileId);
       if (!parentFile) throw new InvalidFileIdException();
       const bucket = parentFile?.owner;
@@ -79,7 +79,7 @@ export class ThumbnailController {
           FileTypeEnum.ImageThumbnail,
         );
         await this.minioClient.client.putObject(
-          user._id,
+          userId,
           thumbnailObjectFilename,
           thumbnailFile,
         );
@@ -103,7 +103,7 @@ export class ThumbnailController {
       // VIDEO THUMBNAIL
       if (!thumbnailExist && FileTypeEnum.Video) {
         const videoThumbnailBuffer = await this.thumbnailService.getVideoThumbnail(
-          user._id,
+          userId,
           parentFile._id,
         );
         res.setHeader('Content-Type', 'image/gif');

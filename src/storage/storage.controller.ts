@@ -178,15 +178,15 @@ export class StorageController {
     }
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Get('/:user/:fild_id')
   async sendUserFile(
     @Res() res: Response,
     @Param('user') userParam: string,
     @Param('fild_id') fileId: string,
-    @UserTokenInfo() user: UserSessionDto,
+    // @UserTokenInfo() user: UserSessionDto,
   ) {
-    if (userParam != user._id) throw new InvalidUserAccessException();
+    // if (userParam != user._id) throw new InvalidUserAccessException();
 
     const file = await this.storageService.getFileById(fileId);
     if (!file) throw new InvalidFileIdException();
