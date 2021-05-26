@@ -23,6 +23,7 @@ import { Request, Response } from 'express';
 import {
   EXCHANGE_UPLOAD,
   FileListResponseDTO,
+  FileTypeEnum,
   TaskDTO,
   TaskStateEnum,
   TaskTypeEnum,
@@ -156,7 +157,7 @@ export class StorageController {
           label: `upload-${file._id}-${file.originalname}`,
           owner: user._id,
           state: TaskStateEnum.finish,
-
+          fileType: file.type,
           priority: 0,
           type: TaskTypeEnum.storage,
           uri: new URL(

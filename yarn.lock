@@ -3012,10 +3012,10 @@ fluent-ffmpeg@^2.1.2:
     async ">=0.2.9"
     which "^1.1.1"
 
-fluentsearch-types@^0.8.6:
-  version "0.8.6"
-  resolved "https://registry.yarnpkg.com/fluentsearch-types/-/fluentsearch-types-0.8.6.tgz#fef4b3bebc41e44f88a2c0081e98d29df3b130b6"
-  integrity sha512-RvOXcsRhyLBDh+anTTH+WfxnnPj0jbtSRAsSFFVGS4vxs3uMjarw+5cnqlaRuixj9ou8RepjyNZ1NpgesZHKoQ==
+fluentsearch-types@^0.9.4:
+  version "0.9.4"
+  resolved "https://registry.yarnpkg.com/fluentsearch-types/-/fluentsearch-types-0.9.4.tgz#d23b97e60ec77009721e23691d7d775fcd58c7e8"
+  integrity sha512-+DLkICo0EnN3TWxgPXY1M8iUp5JUH1+RC93gKH2iHNzVOyNjAAWV6P77fiSQX3ykkRP2VijF0WJczF5P0bRhhA==
   dependencies:
     mongoose "^5.12.10"
 
