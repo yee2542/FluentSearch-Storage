@@ -17,6 +17,8 @@ import { InvalidFileIdException } from '../storage/exceptions/invalid-file-id.ex
 import { StorageService } from '../storage/storage.service';
 import { ThumbnailService } from './thumbnail.service';
 
+export const THUMBNAIL_SIZE = 300;
+
 @Controller()
 export class ThumbnailController {
   constructor(
@@ -55,7 +57,7 @@ export class ThumbnailController {
 
         const objParentFileBuffer = objParentFile;
         const thumbnailFile = await sharp(objParentFileBuffer)
-          .resize(200)
+          .resize(THUMBNAIL_SIZE)
           .jpeg()
           .toBuffer();
         const metaParsed = await this.storageService.metaParsing(
