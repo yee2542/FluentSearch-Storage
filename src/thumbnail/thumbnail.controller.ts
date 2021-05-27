@@ -6,18 +6,14 @@ import {
   Logger,
   Param,
   Res,
-  UseGuards,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { FileTypeEnum, UserSessionDto } from 'fluentsearch-types';
+import { FileTypeEnum } from 'fluentsearch-types';
 import { MinioService } from 'nestjs-minio-client';
 import sharp from 'sharp';
 import getObjectStreamToBuffer from '../common/getObjectStreamToBuffer';
 import thumbnailObjectFilenameUtil from '../common/thumbnailObjectFilename.util';
-import { UserTokenInfo } from '../storage/decorators/user-token-info.decorator';
 import { InvalidFileIdException } from '../storage/exceptions/invalid-file-id.exception';
-import { InvalidUserAccessException } from '../storage/exceptions/invalid-user-access.exception';
-import { JwtAuthGuard } from '../storage/guards/jwt-auth.guard';
 import { StorageService } from '../storage/storage.service';
 import { ThumbnailService } from './thumbnail.service';
 
