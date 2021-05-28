@@ -23,7 +23,6 @@ import { Request, Response } from 'express';
 import {
   EXCHANGE_UPLOAD,
   FileListResponseDTO,
-  FileTypeEnum,
   TaskDTO,
   TaskStateEnum,
   TaskTypeEnum,
@@ -38,7 +37,6 @@ import { ConfigService } from '../config/config.service';
 import { UserTokenInfo } from './decorators/user-token-info.decorator';
 import { StorageResponseDTO } from './dtos/storage.response.dto';
 import { InvalidFileIdException } from './exceptions/invalid-file-id.exception';
-import { InvalidUserAccessException } from './exceptions/invalid-user-access.exception';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { StorageService } from './storage.service';
 import mimeFileUtils from './utils/mime-file.utils';
