@@ -196,7 +196,8 @@ export class StorageController {
     this.minioClient.client.getObject(bucket, object, (err, stream) => {
       if (err) {
         Logger.error(err);
-        return res.sendStatus(500);
+        res.setHeader('Content-Type', 'text/plain');
+        return res.status(400).send('file not found');
       }
       stream.on('error', streamError => {
         Logger.error(streamError);
