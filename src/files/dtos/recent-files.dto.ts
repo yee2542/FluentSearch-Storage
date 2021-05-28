@@ -4,6 +4,9 @@ import { FileTypeEnum } from 'fluentsearch-types';
 @ObjectType()
 class RecentFile {
   @Field()
+  _id: string;
+
+  @Field()
   original_filename: string;
 
   @Field()
