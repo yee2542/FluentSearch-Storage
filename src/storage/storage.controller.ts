@@ -33,6 +33,7 @@ import { Types } from 'mongoose';
 import { MinioService } from 'nestjs-minio-client';
 import { join } from 'path';
 import { URL } from 'url';
+import { MINIO_FILE_NOT_FOUND } from '../common/constants/minio.error.constant';
 import { ConfigService } from '../config/config.service';
 import { UserTokenInfo } from './decorators/user-token-info.decorator';
 import { StorageResponseDTO } from './dtos/storage.response.dto';
@@ -197,7 +198,9 @@ export class StorageController {
       if (err) {
         Logger.error(err);
         res.setHeader('Content-Type', 'text/plain');
-        return res.status(400).send('file not found');
+        if (err.name === MINIO_FILE_NOT_FOUND)
+          return res.status(404).send('file not found');
+        return res.status(500).send(String(err));
       }
       stream.on('error', streamError => {
         Logger.error(streamError);
