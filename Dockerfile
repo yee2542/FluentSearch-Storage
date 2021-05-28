@@ -1,9 +1,10 @@
 FROM ubuntu:20.04 as base
-RUN apt update
-RUN printf 'y\n1\n\1n' | apt install nodejs
-RUN apt install -y npm
-RUN apt install -y ffmpeg
-RUN npm install --global yarn
+USER root
+RUN apt-get update
+RUN apt-get -y install curl gnupg
+RUN curl -sL https://deb.nodesource.com/setup_14.x  | bash -
+RUN apt-get -y install nodejs
+RUN npm install -g yarn
 
 WORKDIR /home
 COPY yarn.lock yarn.lock
