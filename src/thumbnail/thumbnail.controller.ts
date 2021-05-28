@@ -41,6 +41,13 @@ export class ThumbnailController {
       const bucket = parentFile?.owner;
       const object = parentFile._id + '-' + parentFile.original_filename;
 
+      try {
+        await this.minioClient.client.statObject(bucket, object);
+      } catch (err) {
+        res.setHeader('Content-Type', 'text/plain');
+        return res.status(404).send('user bucket is not exisit');
+      }
+
       const fileType = parentFile.type;
       // check thumbnail is already create
       const thumbnailExist = await this.storageService.findFileThumbnail(
