@@ -78,6 +78,8 @@ export class StorageController {
     @Res() res: Response,
     @UserTokenInfo() user: UserSessionDto,
   ): Promise<Response<StorageResponseDTO[]>> {
+    const bucketName = user._id;
+    let uploadedFilename: string[] = [];
     try {
       const logs = files.map(el => ({ ...el, buffer: undefined }));
       const mappedFiles = files.map(el => ({
@@ -99,6 +101,10 @@ export class StorageController {
       }
 
       // bucket upload
+
+      uploadedFilename = mappedFiles.map(
+        file => `${file._id.toHexString()}-${file.originalname}`,
+      );
 
       const bucketUpload = mappedFiles.map(file =>
         this.minioClient.client.putObject(
@@ -173,7 +179,13 @@ export class StorageController {
 
       return res.send(resParsed);
     } catch (err) {
-      throw new InternalServerErrorException(JSON.stringify(err));
+      Logger.error(err);
+      uploadedFilename.length > 0 &&
+        (await this.minioClient.client.removeObjects(
+          bucketName,
+          uploadedFilename,
+        ));
+      throw new InternalServerErrorException(String(err));
     }
   }
 
