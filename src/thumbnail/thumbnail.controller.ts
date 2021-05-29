@@ -37,7 +37,10 @@ export class ThumbnailController {
     try {
       // if (userId != user._id) throw new InvalidUserAccessException();
       const parentFile = await this.storageService.getFileById(fileId);
-      if (!parentFile) throw new InvalidFileIdException();
+      if (!parentFile) {
+        res.setHeader('Content-Type', 'text/plain');
+        return res.status(404).send('file_id is not exisit');
+      }
       const bucket = parentFile?.owner;
       const object = parentFile._id + '-' + parentFile.original_filename;
 
