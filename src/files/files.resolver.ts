@@ -1,5 +1,6 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
 import { ConfigService } from '../config/config.service';
+import { FileDashboardDTO } from './dtos/dashboard/file-dashboard.dto';
 import { FileModelDTO } from './dtos/file/file.dto.model';
 import { RecentFiles } from './dtos/recent-files.dto';
 import { SkipLimitArgs } from './dtos/skip-limit.args';
@@ -11,6 +12,13 @@ export class FilesResolver {
     private readonly fileService: FilesService,
     private readonly configSerivce: ConfigService,
   ) {}
+
+  @Query(() => FileDashboardDTO)
+  async GetFileDashboard(
+    @Args('owner') owner: string,
+  ): Promise<FileDashboardDTO> {
+    return this.fileService.getDashboard(owner);
+  }
 
   @Query(() => FileModelDTO)
   async GetFileById(
